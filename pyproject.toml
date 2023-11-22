@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "twitter-automation"
+version = "0.1.0"
+description = ""
+authors = ["Alex Kvasha <alex_kvasha.work@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+better-automation = "^1.2.0"
+questionary = "^2.0.1"
+loguru = "^0.7.2"
+aiohttp = "^3.9.0"
+aiohttp-proxy = "^0.1.2"
+better-proxy = "^0.2.1"
+
+
+[tool.poetry.group.dev.dependencies]
+black = "^23.11.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

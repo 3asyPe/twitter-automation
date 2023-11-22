@@ -1,0 +1,2 @@
+<type>://username:password@host:port
+<type>://username:password@host:port
