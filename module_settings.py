@@ -19,12 +19,12 @@ class TWITTER_SUBSCRIBE_MODES(str, enum.Enum):
 
 MODULES_SETTINGS = {
     MODULES_NAMES.SUBSCRIBE: {
-        "mode": TWITTER_SUBSCRIBE_MODES.FOLLOW_ONE_USER,
+        "mode": TWITTER_SUBSCRIBE_MODES.FOLLOW_ACCOUNTS_BETWEEN_EACH_OTHER,
         # For FOLLOW_ONE_USER mode
-        "username": "easypeoff",
+        "username": "BaddiesPee",
         # For SUBSCRIBE_TO_USERS_FROM_FILE mode
-        "users_file": "data/users.txt",
-        # For FOLLOW_ACCOUNTS_BETWEEN_EACH_OTHER mode
+        "users_file": "data/users_to_follow.txt",
+        # For SUBSCRIBE_TO_USERS_FROM_FILE and FOLLOW_ACCOUNTS_BETWEEN_EACH_OTHER modes
         "min_number_of_accounts": 2,  # Minimum number of accounts to subscribe between each other
         "max_number_of_accounts": 4,  # Maximum number of accounts to subscribe between each other
         # !WARNING! On big number of accounts it can red flag your accounts and lead to ban

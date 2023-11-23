@@ -6,6 +6,7 @@ from aiohttp import TCPConnector
 from aiohttp_proxy import ProxyConnector
 from better_automation.twitter import Client
 from better_automation.twitter import Account
+from better_automation.twitter.models import UserData
 from better_proxy import Proxy
 
 
@@ -24,7 +25,9 @@ class TwitterAccount(Account):
         async with aiohttp.ClientSession(
             connector=self._get_session_connector()
         ) as session:
-            yield Client(account=self, session=session)
+            client = Client(account=self, session=session)
+            await client.request_user_data()
+            yield client
 
     def _validate_token(self, auth_token: str) -> str | None:
         word_pattern = r"^[a-z0-9]{40}$"
@@ -46,3 +49,9 @@ class TwitterAccount(Account):
             )
 
         return TCPConnector(verify_ssl=False)
+
+    def __str__(self):
+        return f"<TwitterAccount #{self.id} auth_token={self.short_auth_token}>"
+
+    def __repr__(self):
+        return f"<TwitterAccount #{self.id} auth_token={self.short_auth_token}>"

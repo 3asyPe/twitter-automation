@@ -12,3 +12,11 @@ class AccountSuspended(CustomException):
 
 class InvalidToken(CustomException):
     pass
+
+
+class AccountNotFound(CustomException):
+    pass
+
+
+class FollowItSelfError(CustomException):
+    pass

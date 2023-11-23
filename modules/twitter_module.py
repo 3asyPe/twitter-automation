@@ -28,35 +28,35 @@ class TwitterModule(ABC):
                     await func(*args, **kwargs)
                     break
                 except Unauthorized as e:
-                    logger.error(f"<Account #{self.account.id}> Unauthorized")
-                    raise InvalidToken(f"<Account #{self.account.id}> Invalid Token")
+                    logger.error(f"{self} Unauthorized")
+                    raise InvalidToken(f"{self} Invalid Token")
                 except HTTPException as e:
                     if self.account.status == AccountStatus.LOCKED:
-                        logger.info(f"<Account #{self.account.id}> Account is locked")
+                        logger.error(f"{self} is locked")
                         raise AccountLocked(
-                            f"<Account #{self.account.id}> Account is locked"
+                            f"{self} is locked"
                         )
                     elif self.account.status == AccountStatus.SUSPENDED:
-                        logger.info(
-                            f"<Account #{self.account.id}> Account is suspended"
+                        logger.error(
+                            f"{self} is suspended"
                         )
                         raise AccountSuspended(
-                            f"<Account #{self.account.id}> Account is suspended"
+                            f"{self} is suspended"
                         )
                     raise e
             except TwitterAPIException as e:
                 logger.error(
-                    f"<Account #{self.account.id}> Error while running module {self._module_name}: {e}"
+                    f"{self} Error while running module {self._module_name}: {e}"
                 )
                 retry += 1
                 if retry == max_retries + 1:
                     raise e
 
             logger.info(
-                f"<Account #{self.account.id}> Retrying module {self._module_name} ({retry}/{max_retries})"
+                f"{self} Retrying module {self._module_name} ({retry}/{max_retries})"
             )
             await sleep(
-                account_id=self.account.id,
+                account=self.account,
                 sleep_from=config.MIN_RETRY_DELAY,
                 sleep_to=config.MIN_RETRY_DELAY,
             )

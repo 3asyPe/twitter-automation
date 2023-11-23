@@ -31,13 +31,12 @@ class Executor:
         await asyncio.gather(*tasks)
 
     async def _run_module_for_group(self, module, thread_id):
-        print(f"Running module {module} for group #{thread_id} groups={self.groups}")
         for i, account in enumerate(self.groups[thread_id]):
-            logger.info(f"Running module {module} for account #{account.id}")
+            logger.info(f"{account} Running module {module}")
 
             if thread_id != 0 or i != 0:
                 await sleep(
-                    account_id=account.id,
+                    account=account,
                     sleep_from=config.MIN_SLEEP_BEFORE_NEXT_ACCOUNT,
                     sleep_to=config.MAX_SLEEP_BEFORE_NEXT_ACCOUNT,
                 )
@@ -63,58 +62,44 @@ class Executor:
             except Exception as e:
                 traceback.print_exc()
                 logger.error(
-                    f"Error while running module {module} for account #{account.id}: {e}"
+                    f"{account} Error while running module {module}: {e}"
                 )
-
-    def _generate_accounts(self):
-        accounts = []
-        id = 1
-        for group in self.groups:
-            for auth_token, proxy, user_agent in group:
-                try:
-                    accounts.append(
-                        TwitterAccount(
-                            id=id,
-                            auth_token=auth_token,
-                            user_agent=user_agent,
-                            proxy=proxy,
-                        )
-                    )
-                except Exception as e:
-                    logger.error(f"Error while creating account #{id}: {e}")
-
-                id += 1
-
-        return accounts
+            else:
+                logger.success(f"{account} Module {module} finished")
 
     def _generate_accounts(self) -> tuple[list, list]:
         data = list(zip(config.ACCOUNTS, config.PROXIES, config.USER_AGENTS))
         if config.RANDOMIZE_ACCOUNTS:
             random.shuffle(data)
 
-        groups = [[]]
-        group_len = math.ceil(len(data) / config.THREADS)
-
         accounts = []
 
-        cur_group_len = 0
-        cur_group_id = 0
         for id, (auth_token, proxy, user_agent) in enumerate(data, start=1):
             try:
                 account = TwitterAccount(
                     id=id, auth_token=auth_token, user_agent=user_agent, proxy=proxy
                 )
-                cur_group_len += 1
             except Exception as e:
-                logger.error(f"Error while creating account #{id}: {e}")
+                logger.error(f"Error while creating Account #{id}: {e}")
                 continue
 
             accounts.append(account)
-            if cur_group_len > group_len:
-                groups.append([])
-                cur_group_id += 1
-                cur_group_len = 0
 
-            groups[cur_group_id].append(account)
-        print(f"{groups=} {accounts=}")
+        if config.THREADS <= 0:
+            config.THREADS = 1
+        elif config.THREADS > len(accounts):
+            config.THREADS = len(accounts)
+
+        total_accounts = len(accounts)
+        group_size = total_accounts // config.THREADS
+        remainder = total_accounts % config.THREADS
+
+        groups = []
+        start = 0
+        for i in range(config.THREADS):
+            # Add an extra account to some groups to distribute the remainder
+            end = start + group_size + (1 if i < remainder else 0)
+            groups.append(accounts[start:end])
+            start = end
+
         return groups, accounts
