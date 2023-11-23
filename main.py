@@ -25,7 +25,7 @@ def get_module():
 
 
 def main():
-    logger.info("Be carefull with this tool, it can get your account banned!")
+    print("Be carefull with this tool, it can get your account banned!")
 
     executor = Executor()
     module = get_module()
@@ -34,8 +34,8 @@ def main():
         loop = asyncio.get_event_loop()
         loop.run_until_complete(executor.run_module(module))
 
-    logger.info("Subscribe to me here - https://t.me/easypeoff")
-    logger.info("You can thank me here - 0x00000D01B969922762a63F3cfD8ec9545DE4d513")
+    print("Subscribe to me here - https://t.me/easypeoff")
+    print("You can thank me here - 0x00000D01B969922762a63F3cfD8ec9545DE4d513")
 
 
 if __name__ == "__main__":

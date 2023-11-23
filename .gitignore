@@ -162,3 +162,6 @@ cython_debug/
 data/accounts.txt
 data/proxies.txt
 data/user_agents.txt
+data/suspended_accounts.txt
+data/locked_accounts.txt
+data/invalid_tokens.txt
