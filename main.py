@@ -3,12 +3,12 @@ import questionary
 from loguru import logger
 
 from modules.executor import Executor
-from module_settings import MODULES_NAMES
+from module_settings import ModulesNames
 
 
 def get_module():
     choices = []
-    for id, item in enumerate(MODULES_NAMES, start=1):
+    for id, item in enumerate(ModulesNames, start=1):
         choices.append(
             questionary.Choice(f"{id}) {item.value.capitalize()}", item.value)
         )

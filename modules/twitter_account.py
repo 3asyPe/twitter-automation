@@ -6,7 +6,6 @@ from aiohttp import TCPConnector
 from aiohttp_proxy import ProxyConnector
 from better_automation.twitter import Client
 from better_automation.twitter import Account
-from better_automation.twitter.models import UserData
 from better_proxy import Proxy
 
 

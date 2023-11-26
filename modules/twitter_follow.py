@@ -5,7 +5,7 @@ from better_automation.twitter.errors import Forbidden
 from loguru import logger
 
 from config import config
-from module_settings import MODULES_NAMES, TWITTER_SUBSCRIBE_MODES
+from module_settings import ModulesNames, TwitterFollowModes
 from modules.twitter_account import TwitterAccount
 from modules.twitter_module import TwitterModule
 from utils.errors import AccountNotFound, FollowItSelfError
@@ -13,16 +13,16 @@ from utils.file_system import load_file
 from utils.sleep import sleep
 
 
-class TwitterSubscribe(TwitterModule):
-    _module_name = MODULES_NAMES.SUBSCRIBE
+class TwitterFollow(TwitterModule):
+    _module_name = ModulesNames.FOLLOW
 
     def __init__(self, account: TwitterAccount, all_accounts: list[TwitterAccount]):
         super().__init__(account=account, all_accounts=all_accounts)
 
         self.modes = {
-            TWITTER_SUBSCRIBE_MODES.FOLLOW_ONE_USER: self._follow_one_user,
-            TWITTER_SUBSCRIBE_MODES.FOLLOW_USERS_FROM_FILE: self._follow_users_from_file,
-            TWITTER_SUBSCRIBE_MODES.FOLLOW_ACCOUNTS_BETWEEN_EACH_OTHER: self._follow_accounts_between_each_other,
+            TwitterFollowModes.FOLLOW_ONE_USER: self._follow_one_user,
+            TwitterFollowModes.FOLLOW_USERS_FROM_FILE: self._follow_users_from_file,
+            TwitterFollowModes.FOLLOW_ACCOUNTS_BETWEEN_EACH_OTHER: self._follow_accounts_between_each_other,
         }
 
     async def run(self):
@@ -30,7 +30,9 @@ class TwitterSubscribe(TwitterModule):
         async with self.account.get_client_session() as client:
             await self._run_module(func=self.modes[func], client=client)
 
-    async def _follow_one_user(self, client: Client, username: str | None = None, log_error=True):
+    async def _follow_one_user(
+        self, client: Client, username: str | None = None, log_error=True
+    ):
         username = username or self.module_settings["username"]
 
         logger.info(f"{self.account} Following user {username}")
@@ -65,8 +67,12 @@ class TwitterSubscribe(TwitterModule):
             min_number_of_accounts = len(usernames)
             max_number_of_accounts = len(usernames)
         else:
-            min_number_of_accounts = min(self.module_settings["min_number_of_accounts"], len(usernames))
-            max_number_of_accounts = min(self.module_settings["max_number_of_accounts"], len(usernames))
+            min_number_of_accounts = min(
+                self.module_settings["min_number_of_accounts"], len(usernames)
+            )
+            max_number_of_accounts = min(
+                self.module_settings["max_number_of_accounts"], len(usernames)
+            )
 
         num_of_accounts = random.randint(min_number_of_accounts, max_number_of_accounts)
 
@@ -74,7 +80,9 @@ class TwitterSubscribe(TwitterModule):
 
         for i, username in enumerate(usernames):
             try:
-                await self._follow_one_user(client=client, username=username, log_error=False)
+                await self._follow_one_user(
+                    client=client, username=username, log_error=False
+                )
             except AccountNotFound:
                 logger.error(f"{self.account} User username={username} not found")
             except FollowItSelfError:
@@ -86,13 +94,18 @@ class TwitterSubscribe(TwitterModule):
                     sleep_from=config.MIN_SLEEP_BEFORE_NEXT_REQUEST,
                     sleep_to=config.MAX_SLEEP_BEFORE_NEXT_REQUEST,
                 )
+
     async def _follow_accounts_between_each_other(self, client: Client):
         if self.module_settings["all_accounts"]:
             min_number_of_accounts = len(self.all_accounts)
             max_number_of_accounts = len(self.all_accounts)
         else:
-            min_number_of_accounts = min(self.module_settings["min_number_of_accounts"], len(self.all_accounts))
-            max_number_of_accounts = min(self.module_settings["max_number_of_accounts"], len(self.all_accounts))
+            min_number_of_accounts = min(
+                self.module_settings["min_number_of_accounts"], len(self.all_accounts)
+            )
+            max_number_of_accounts = min(
+                self.module_settings["max_number_of_accounts"], len(self.all_accounts)
+            )
 
         num_of_accounts = random.randint(min_number_of_accounts, max_number_of_accounts)
 
@@ -102,17 +115,16 @@ class TwitterSubscribe(TwitterModule):
             async with account.get_client_session() as temp_client:
                 username = account.data.username
 
-            await sleep(
-                account=self.account,
-                sleep_from=1,
-                sleep_to=5,
-                log=False
-            )
+            await sleep(account=self.account, sleep_from=1, sleep_to=5, log=False)
 
             try:
-                await self._follow_one_user(client=client, username=username, log_error=False)
+                await self._follow_one_user(
+                    client=client, username=username, log_error=False
+                )
             except AccountNotFound:
-                logger.error(f"{self.account} User username={account.data.username} not found")
+                logger.error(
+                    f"{self.account} User username={account.data.username} not found"
+                )
             except FollowItSelfError:
                 logger.info(f"{self.account} Skipping myself")
 

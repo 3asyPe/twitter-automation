@@ -7,7 +7,7 @@ from typing import Callable, Awaitable
 from loguru import logger
 
 from config import config
-from module_settings import MODULES_NAMES, MODULES_SETTINGS
+from module_settings import ModulesNames, MODULES_SETTINGS
 from modules.twitter_account import TwitterAccount
 from utils.errors import InvalidToken, AccountLocked, AccountSuspended
 from utils.sleep import sleep
@@ -33,16 +33,10 @@ class TwitterModule(ABC):
                 except HTTPException as e:
                     if self.account.status == AccountStatus.LOCKED:
                         logger.error(f"{self} is locked")
-                        raise AccountLocked(
-                            f"{self} is locked"
-                        )
+                        raise AccountLocked(f"{self} is locked")
                     elif self.account.status == AccountStatus.SUSPENDED:
-                        logger.error(
-                            f"{self} is suspended"
-                        )
-                        raise AccountSuspended(
-                            f"{self} is suspended"
-                        )
+                        logger.error(f"{self} is suspended")
+                        raise AccountSuspended(f"{self} is suspended")
                     raise e
             except TwitterAPIException as e:
                 logger.error(
@@ -64,5 +58,5 @@ class TwitterModule(ABC):
     @property
     @staticmethod
     @abstractmethod
-    def _module_name() -> MODULES_NAMES:
+    def _module_name() -> ModulesNames:
         pass

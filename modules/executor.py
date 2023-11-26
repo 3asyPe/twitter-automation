@@ -7,8 +7,9 @@ from loguru import logger
 
 from config import config
 from modules.twitter_account import TwitterAccount
-from module_settings import MODULES_NAMES
-from modules.twitter_subscribe import TwitterSubscribe
+from module_settings import ModulesNames
+from modules.twitter_follow import TwitterFollow
+from modules.twitter_unfollow import TwitterUnfollow
 from utils.errors import InvalidToken, AccountLocked, AccountSuspended
 from utils.sleep import sleep
 from utils.file_system import save_to_file
@@ -19,8 +20,8 @@ class Executor:
         self.groups, self.accounts = self._generate_accounts()
 
         self.modules = {
-            MODULES_NAMES.SUBSCRIBE: TwitterSubscribe,
-            # MODULES_NAMES.UNSUBSCRIBE: self.unsubscribe,
+            ModulesNames.FOLLOW: TwitterFollow,
+            ModulesNames.UNFOLLOW: TwitterUnfollow,
         }
 
     async def run_module(self, module):
@@ -61,9 +62,7 @@ class Executor:
                 )
             except Exception as e:
                 traceback.print_exc()
-                logger.error(
-                    f"{account} Error while running module {module}: {e}"
-                )
+                logger.error(f"{account} Error while running module {module}: {e}")
             else:
                 logger.success(f"{account} Module {module} finished")
 
