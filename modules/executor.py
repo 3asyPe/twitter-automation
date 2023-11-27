@@ -1,5 +1,5 @@
 import asyncio
-import math
+import atexit
 import random
 import traceback
 
@@ -7,24 +7,30 @@ from loguru import logger
 
 from config import config
 from modules.twitter_account import TwitterAccount
-from module_settings import ModulesNames
+from module_settings import TwitterModulesNames, MODULES_SETTINGS, TwitterTweetModes
 from modules.twitter_follow import TwitterFollow
 from modules.twitter_unfollow import TwitterUnfollow
+from modules.twitter_tweet import TwitterTweet
 from utils.errors import InvalidToken, AccountLocked, AccountSuspended
 from utils.sleep import sleep
-from utils.file_system import save_to_file
+from utils.file_system import save_to_file, load_file
 
 
 class Executor:
     def __init__(self):
         self.groups, self.accounts = self._generate_accounts()
 
-        self.modules = {
-            ModulesNames.FOLLOW: TwitterFollow,
-            ModulesNames.UNFOLLOW: TwitterUnfollow,
+        self.twitter_modules = {
+            TwitterModulesNames.FOLLOW: TwitterFollow,
+            TwitterModulesNames.UNFOLLOW: TwitterUnfollow,
+            TwitterModulesNames.TWEET: TwitterTweet,
         }
 
+        self.database_modules = {}
+
     async def run_module(self, module):
+        self._register_exit_handlers(module)
+
         tasks = []
         for thread_id in range(config.THREADS):
             tasks.append(self._run_module_for_group(module=module, thread_id=thread_id))
@@ -42,7 +48,7 @@ class Executor:
                     sleep_to=config.MAX_SLEEP_BEFORE_NEXT_ACCOUNT,
                 )
             try:
-                await self.modules[module](
+                await self.twitter_modules[module](
                     account=account, all_accounts=self.accounts
                 ).run()
             except InvalidToken:
@@ -102,3 +108,26 @@ class Executor:
             start = end
 
         return groups, accounts
+
+    def _register_exit_handlers(self, module):
+        if (
+            module == TwitterModulesNames.TWEET
+            and MODULES_SETTINGS[TwitterModulesNames.TWEET]["mode"]
+            == TwitterTweetModes.TWEET_TWEETS_FROM_FILE
+            and MODULES_SETTINGS[TwitterModulesNames.TWEET][
+                "delete_written_tweets_from_file"
+            ]
+        ):
+            atexit.register(
+                save_to_file,
+                file_name=MODULES_SETTINGS[TwitterModulesNames.TWEET]["tweets_file"],
+                data=load_file(
+                    file_name=MODULES_SETTINGS[TwitterModulesNames.TWEET][
+                        "tweets_file"
+                    ],
+                    file_format="json",
+                    convert_to_set=True,
+                ),  # Cached value
+                file_format="json",
+                open_format="w",
+            )

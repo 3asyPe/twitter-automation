@@ -5,7 +5,7 @@ from better_automation.twitter.errors import Forbidden
 from loguru import logger
 
 from config import config
-from module_settings import ModulesNames, TwitterFollowModes
+from module_settings import TwitterModulesNames, TwitterFollowModes
 from modules.twitter_account import TwitterAccount
 from modules.twitter_module import TwitterModule
 from utils.errors import AccountNotFound, FollowItSelfError
@@ -14,7 +14,7 @@ from utils.sleep import sleep
 
 
 class TwitterFollow(TwitterModule):
-    _module_name = ModulesNames.FOLLOW
+    _module_name = TwitterModulesNames.FOLLOW
 
     def __init__(self, account: TwitterAccount, all_accounts: list[TwitterAccount]):
         super().__init__(account=account, all_accounts=all_accounts)

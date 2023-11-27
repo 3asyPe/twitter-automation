@@ -3,12 +3,12 @@ import questionary
 from loguru import logger
 
 from modules.executor import Executor
-from module_settings import ModulesNames
+from module_settings import TwitterModulesNames
 
 
 def get_module():
     choices = []
-    for id, item in enumerate(ModulesNames, start=1):
+    for id, item in enumerate(TwitterModulesNames, start=1):
         choices.append(
             questionary.Choice(f"{id}) {item.value.capitalize()}", item.value)
         )
@@ -25,7 +25,7 @@ def get_module():
 
 
 def main():
-    print("Be carefull with this tool, it can get your account banned!")
+    print("Be careful with this tool, it can get your account banned!")
 
     executor = Executor()
     module = get_module()

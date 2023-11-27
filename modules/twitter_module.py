@@ -7,7 +7,7 @@ from typing import Callable, Awaitable
 from loguru import logger
 
 from config import config
-from module_settings import ModulesNames, MODULES_SETTINGS
+from module_settings import TwitterModulesNames, MODULES_SETTINGS
 from modules.twitter_account import TwitterAccount
 from utils.errors import InvalidToken, AccountLocked, AccountSuspended
 from utils.sleep import sleep
@@ -58,5 +58,5 @@ class TwitterModule(ABC):
     @property
     @staticmethod
     @abstractmethod
-    def _module_name() -> ModulesNames:
+    def _module_name() -> TwitterModulesNames:
         pass

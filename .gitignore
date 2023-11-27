@@ -167,3 +167,4 @@ data/locked_accounts.txt
 data/invalid_tokens.txt
 data/users_to_follow.txt
 data/users_to_unfollow.txt
+data/tweets.json
