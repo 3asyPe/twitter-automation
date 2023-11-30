@@ -8,6 +8,7 @@ from module_settings import TwitterModulesNames, TwitterTweetModes
 from modules.twitter_account import TwitterAccount
 from modules.twitter_module import TwitterModule
 from utils.file_system import load_file
+from utils.input import ainput
 from utils.sleep import sleep
 
 
@@ -29,16 +30,11 @@ class TwitterTweet(TwitterModule):
 
     async def _tweet(self, client: Client, text: str):
         logger.info(f"{self.account} Tweeting text={text}")
-        try:
-            await client.tweet(text=text)
-        except Exception as e:
-            logger.error(f"{self.account} Error while tweeting: {e}")
-            logger.error(f"{self.account} {type(e)}")
-            raise e
+        await client.tweet(text=text)
         logger.success(f"{self.account} Tweeted text={text}")
 
     async def _tweet_from_input(self, client: Client):
-        text = input(f"{self.account} Enter tweet text: ")
+        text = await ainput(f"{self.account} Enter tweet text: ")
         await self._tweet(client=client, text=text)
 
     async def _tweet_from_file(self, client: Client):

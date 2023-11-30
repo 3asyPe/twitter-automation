@@ -77,7 +77,7 @@ MODULES_SETTINGS = {
         #
         # Tweet tweets from json file
         # TwitterTweetModes.TWEET_TWEETS_FROM_FILE
-        "mode": TwitterTweetModes.TWEET_TWEETS_FROM_FILE,
+        "mode": TwitterTweetModes.TWEET_FROM_INPUT,
         "min_number_of_tweets": 0,  # Minimum number of tweets to post
         "max_number_of_tweets": 5,  # Maximum number of tweets to post
         "all_tweets": True,  # Post all tweets from file

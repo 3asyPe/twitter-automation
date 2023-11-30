@@ -31,10 +31,11 @@ class TwitterModule(ABC):
                     logger.error(f"{self} Unauthorized")
                     raise InvalidToken(f"{self} Invalid Token")
                 except HTTPException as e:
+                    logger.error(f"{self.account} Error - {type(e)}")
                     if self.account.status == AccountStatus.LOCKED:
                         logger.error(f"{self} is locked")
                         raise AccountLocked(f"{self} is locked")
-                    elif self.account.status == AccountStatus.SUSPENDED:
+                    elif (37 in e.api_codes and "Missing TwitterUserNotSuspended" in e.api_messages) or self.account.status == AccountStatus.SUSPENDED:
                         logger.error(f"{self} is suspended")
                         raise AccountSuspended(f"{self} is suspended")
                     raise e
