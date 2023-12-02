@@ -11,6 +11,7 @@ from module_settings import TwitterModulesNames, MODULES_SETTINGS, TwitterTweetM
 from modules.twitter_follow import TwitterFollow
 from modules.twitter_unfollow import TwitterUnfollow
 from modules.twitter_tweet import TwitterTweet
+from modules.twitter_retweet import TwitterRetweet
 from utils.errors import InvalidToken, AccountLocked, AccountSuspended
 from utils.sleep import sleep
 from utils.file_system import save_to_file, load_file
@@ -24,6 +25,7 @@ class Executor:
             TwitterModulesNames.FOLLOW: TwitterFollow,
             TwitterModulesNames.UNFOLLOW: TwitterUnfollow,
             TwitterModulesNames.TWEET: TwitterTweet,
+            TwitterModulesNames.RETWEET: TwitterRetweet,
         }
 
         self.database_modules = {}

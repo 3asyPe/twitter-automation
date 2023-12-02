@@ -21,8 +21,8 @@ class Config:
     MIN_SLEEP_BEFORE_NEXT_ACCOUNT = 3600 # in seconds
     MAX_SLEEP_BEFORE_NEXT_ACCOUNT = 7200 # in seconds
 
-    MIN_SLEEP_BEFORE_NEXT_REQUEST = 3600 # in seconds
-    MAX_SLEEP_BEFORE_NEXT_REQUEST = 21600 # in seconds
+    MIN_SLEEP_BEFORE_NEXT_REQUEST = 1 # in seconds
+    MAX_SLEEP_BEFORE_NEXT_REQUEST = 1800 # in seconds
 
 
 config = Config()

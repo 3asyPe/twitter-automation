@@ -5,6 +5,7 @@ class TwitterModulesNames(str, enum.Enum):
     FOLLOW = "FOLLOW"
     UNFOLLOW = "UNFOLLOW"
     TWEET = "TWEET"
+    RETWEET = "RETWEET"
 
 
 class TwitterFollowModes(str, enum.Enum):
@@ -32,6 +33,11 @@ class TwitterTweetModes(str, enum.Enum):
 
     # Tweet tweets from json file
     TWEET_TWEETS_FROM_FILE = "TWEET_TWEETS_FROM_FILE"
+
+
+class TwitterRetweetModes(str, enum.Enum):
+    # Retweet tweets from text file containing TweetsIDs
+    RETWEET_TWEETS_FROM_FILE = "TWEET_TWEETS_FROM_FILE"
 
 
 MODULES_SETTINGS = {
@@ -87,4 +93,13 @@ MODULES_SETTINGS = {
         # Delete written tweets from file to avoid duplicates on next run
         "delete_written_tweets_from_file": True,
     },
+    TwitterModulesNames.RETWEET: {
+        # Retweet tweets from text file containing TweetsIDs
+        # TwitterRetweetModes.RETWEET_TWEETS_FROM_FILE
+        "mode": TwitterRetweetModes.RETWEET_TWEETS_FROM_FILE,
+        "min_number_of_retweets": 0,  # Minimum number of tweets to retweet
+        "max_number_of_retweets": 5,  # Maximum number of tweets to retweet
+        "all_tweets": True,  # Retweet all tweets from file
+        "tweets_file": "data/retweets.txt",  # File with tweets to retweet
+    }
 }
