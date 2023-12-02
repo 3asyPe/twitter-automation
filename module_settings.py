@@ -46,7 +46,7 @@ MODULES_SETTINGS = {
         # TwitterFollowModes.FOLLOW_ACCOUNTS_BETWEEN_EACH_OTHER
         "mode": TwitterFollowModes.FOLLOW_ACCOUNTS_BETWEEN_EACH_OTHER,
         # For FOLLOW_ONE_USER mode
-        "username": "BaddiesPee",
+        "username": "easypeoff",
         # For FOLLOW_USERS_FROM_FILE mode
         "users_file": "data/users_to_follow.txt",
         # For FOLLOW_USERS_FROM_FILE and FOLLOW_ACCOUNTS_BETWEEN_EACH_OTHER modes
@@ -63,7 +63,7 @@ MODULES_SETTINGS = {
         # TwitterUnfollowModes.UNFOLLOW_USERS_FROM_FILE
         "mode": TwitterUnfollowModes.UNFOLLOW_USERS_FROM_FILE,
         # For UNFOLLOW_ONE_USER mode
-        "username": "BaddiesPee",
+        "username": "easypeoff",
         # For UNFOLLOW_USERS_FROM_FILE mode
         "users_file": "data/users_to_unfollow.txt",
         "min_number_of_accounts": 2,  # Minimum number of accounts to subscribe
