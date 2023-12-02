@@ -44,7 +44,7 @@ poetry install
 ```
 
 ## Настройка
-Скоро допишу
+**Подробный гайд по настройке - https://teletype.in/@easypeoff/twitter-automation**
 
 config.py - основной файл с настройками
 
@@ -52,11 +52,11 @@ modules_settings.py - настройки модулей
 
 В data/ находятся примеры нужных файлов
 
-accounts.txt - auth token'ы твиттеров
+data/accounts.txt - auth token'ы твиттеров
 
-proxies.txt - прокси
+data/proxies.txt - прокси
 
-user_agents.txt - отпечатки
+data/user_agents.txt - идентификаторы браузера
 
 ## Запуск
 В активированном виртуальном окружении (см. установку)
