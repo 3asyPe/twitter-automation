@@ -6,6 +6,7 @@ class TwitterModulesNames(str, enum.Enum):
     UNFOLLOW = "UNFOLLOW"
     TWEET = "TWEET"
     RETWEET = "RETWEET"
+    LIKE = "LIKE"
 
 
 class TwitterFollowModes(str, enum.Enum):
@@ -38,6 +39,11 @@ class TwitterTweetModes(str, enum.Enum):
 class TwitterRetweetModes(str, enum.Enum):
     # Retweet tweets from text file containing TweetsIDs
     RETWEET_TWEETS_FROM_FILE = "TWEET_TWEETS_FROM_FILE"
+
+
+class TwitterLikeModes(str, enum.Enum):
+    # Like tweets from text file containing TweetsIDs
+    LIKE_TWEETS_FROM_FILE = "TWEET_TWEETS_FROM_FILE"
 
 
 MODULES_SETTINGS = {
@@ -101,5 +107,14 @@ MODULES_SETTINGS = {
         "max_number_of_retweets": 5,  # Maximum number of tweets to retweet
         "all_tweets": True,  # Retweet all tweets from file
         "tweets_file": "data/retweets.txt",  # File with tweets to retweet
+    },
+    TwitterModulesNames.LIKE: {
+        # Like tweets from text file containing TweetsIDs
+        # TwitterLikeModes.LIKE_TWEETS_FROM_FILE
+        "mode": TwitterLikeModes.LIKE_TWEETS_FROM_FILE,
+        "min_number_of_likes": 0,  # Minimum number of tweets to like
+        "max_number_of_likes": 5,  # Maximum number of tweets to like
+        "all_tweets": True,  # Like all tweets from file
+        "tweets_file": "data/likes.txt",  # File with tweets to retweet
     }
 }
