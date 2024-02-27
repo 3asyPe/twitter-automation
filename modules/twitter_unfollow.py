@@ -1,6 +1,6 @@
 import random
 
-from better_automation.twitter import Client
+from better_automation.twitter import TwitterClient as Client
 from better_automation.twitter.errors import Forbidden
 from loguru import logger
 
@@ -26,8 +26,8 @@ class TwitterUnfollow(TwitterModule):
 
     async def run(self):
         func = self.module_settings["mode"]
-        async with self.account.get_client_session() as client:
-            await self._run_module(func=self.modes[func], client=client)
+        client = await self.account.get_client_session()
+        await self._run_module(func=self.modes[func], client=client)
 
     async def _unfollow_one_user(
         self, client: Client, username: str | None = None, log_error=True

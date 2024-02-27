@@ -4,29 +4,28 @@ import aiohttp
 
 from aiohttp import TCPConnector
 from aiohttp_proxy import ProxyConnector
-from better_automation.twitter import Client
-from better_automation.twitter import Account
+from better_automation.twitter import TwitterClient as Client
+from better_automation.twitter import TwitterAccount as Account
 from better_proxy import Proxy
 
 
 class TwitterAccount(Account):
+    user_agent: str | None = None
+    proxy: str | None = None
+
     def __init__(
         self, id: int, auth_token: str, user_agent: str, proxy: str | None = None
     ):
+        super().__init__(auth_token=self._validate_token(auth_token))
+        
         self.id = id
         self.user_agent = user_agent
         self.proxy = proxy
 
-        super().__init__(auth_token=self._validate_token(auth_token))
-
-    @asynccontextmanager
-    async def get_client_session(self) -> Client:
-        async with aiohttp.ClientSession(
-            connector=self._get_session_connector()
-        ) as session:
-            client = Client(account=self, session=session)
-            await client.request_user_data()
-            yield client
+    async def get_client_session(self):
+        client = Client(account=self, proxy=self.proxy, user_agent=self.user_agent)
+        await client.request_user_data()
+        return client
 
     def _validate_token(self, auth_token: str) -> str | None:
         word_pattern = r"^[a-z0-9]{40}$"

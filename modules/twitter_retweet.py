@@ -1,6 +1,6 @@
 import random
 
-from better_automation.twitter import Client
+from better_automation.twitter import TwitterClient as Client
 from better_automation.twitter.errors import HTTPException
 from loguru import logger
 
@@ -24,8 +24,8 @@ class TwitterRetweet(TwitterModule):
 
     async def run(self):
         func = self.module_settings["mode"]
-        async with self.account.get_client_session() as client:
-            await self._run_module(func=self.modes[func], client=client)
+        client = await self.account.get_client_session()
+        await self._run_module(func=self.modes[func], client=client)
 
     async def _retweet(self, client: Client, tweet_id: str):
         logger.info(f"{self.account} Retweeting tweet with id={tweet_id}")

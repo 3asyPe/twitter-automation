@@ -80,7 +80,6 @@ class Executor:
         data = list(zip(config.ACCOUNTS, config.PROXIES, config.USER_AGENTS))
         if config.RANDOMIZE_ACCOUNTS:
             random.shuffle(data)
-
         accounts = []
 
         for id, (auth_token, proxy, user_agent) in enumerate(data, start=1):
@@ -93,7 +92,6 @@ class Executor:
                 continue
 
             accounts.append(account)
-
         if config.THREADS <= 0:
             config.THREADS = 1
         elif config.THREADS > len(accounts):
@@ -131,7 +129,9 @@ class Executor:
                     ],
                     file_format="json",
                     convert_to_set=True,
+                    convert_to_hashable=True,
                 ),  # Cached value
                 file_format="json",
                 open_format="w",
+                tuples_to_dict=True,
             )

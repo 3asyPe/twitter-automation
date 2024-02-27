@@ -170,3 +170,4 @@ data/users_to_unfollow.txt
 data/tweets.json
 data/retweets.txt
 data/likes.txt
+data/images

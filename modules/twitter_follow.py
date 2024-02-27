@@ -1,6 +1,6 @@
 import random
 
-from better_automation.twitter import Client
+from better_automation.twitter import TwitterClient as Client
 from better_automation.twitter.errors import Forbidden
 from loguru import logger
 
@@ -27,8 +27,8 @@ class TwitterFollow(TwitterModule):
 
     async def run(self):
         func = self.module_settings["mode"]
-        async with self.account.get_client_session() as client:
-            await self._run_module(func=self.modes[func], client=client)
+        client = await self.account.get_client_session()
+        await self._run_module(func=self.modes[func], client=client)
 
     async def _follow_one_user(
         self, client: Client, username: str | None = None, log_error=True
@@ -112,8 +112,8 @@ class TwitterFollow(TwitterModule):
         accounts = random.sample(self.all_accounts, num_of_accounts)
 
         for i, account in enumerate(accounts):
-            async with account.get_client_session() as temp_client:
-                username = account.data.username
+            temp_client = await self.account.get_client_session()
+            username = account.data.username
 
             await sleep(account=self.account, sleep_from=1, sleep_to=5, log=False)
 

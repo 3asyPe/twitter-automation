@@ -1,6 +1,6 @@
 import random
 
-from better_automation.twitter import Client
+from better_automation.twitter import TwitterClient as Client
 from loguru import logger
 
 from config import config
@@ -25,13 +25,19 @@ class TwitterTweet(TwitterModule):
 
     async def run(self):
         func = self.module_settings["mode"]
-        async with self.account.get_client_session() as client:
-            await self._run_module(func=self.modes[func], client=client)
+        client = await self.account.get_client_session()
+        await self._run_module(func=self.modes[func], client=client)
 
-    async def _tweet(self, client: Client, text: str):
+    async def _tweet(self, client: Client, text: str, media_id: str | None = None):
         logger.info(f"{self.account} Tweeting text={text}")
-        await client.tweet(text=text)
+        await client.tweet(text=text, media_id=media_id)
         logger.success(f"{self.account} Tweeted text={text}")
+
+    async def _upload_image(self, client: Client, image: bytes) -> str:
+        logger.info(f"{self.account} Uploading image...")
+        media_id = await client.upload_image(image=image)
+        logger.success(f"{self.account} Uploaded image")
+        return media_id
 
     async def _tweet_from_input(self, client: Client):
         text = await ainput(f"{self.account} Enter tweet text: ")
@@ -43,6 +49,7 @@ class TwitterTweet(TwitterModule):
                 file_name=self.module_settings["tweets_file"],
                 file_format="json",
                 convert_to_set=True,
+                convert_to_hashable=True,
             )
             number_of_tweets = len(tweets)
         else:
@@ -59,16 +66,26 @@ class TwitterTweet(TwitterModule):
                 file_name=self.module_settings["tweets_file"],
                 file_format="json",
                 convert_to_set=True,
+                convert_to_hashable=True,
             )
 
             if len(tweets) == 0:
                 break
 
             tweet = tweets.pop()
+            if isinstance(tweet, tuple):
+                tweet = dict(tweet)
 
             logger.info(f"{self.account} Tweeting #{i+1} tweet")
 
-            await self._tweet(client=client, text=tweet)
+            if isinstance(tweet, dict):
+                media_id = await self._upload_image(client=client, image=load_file(
+                    tweet["image"], file_format="bytes"
+                ))
+                await self._tweet(client=client, text=tweet["text"], media_id=media_id)
+            else:
+                await self._tweet(client=client, text=tweet)
+
 
             if self.module_settings["post_only_unique_tweets_on_all_accounts"]:
                 logger.info(

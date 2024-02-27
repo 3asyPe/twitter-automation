@@ -1,7 +1,7 @@
 import random
 
 from abc import ABC, abstractmethod
-from better_automation.twitter.account import AccountStatus
+from better_automation.twitter.account import TwitterAccountStatus
 from better_automation.twitter.errors import *
 from typing import Callable, Awaitable
 from loguru import logger
@@ -32,10 +32,10 @@ class TwitterModule(ABC):
                     raise InvalidToken(f"{self} Invalid Token")
                 except HTTPException as e:
                     logger.error(f"{self.account} Error - {type(e)}")
-                    if self.account.status == AccountStatus.LOCKED:
+                    if self.account.status == TwitterAccountStatus.LOCKED:
                         logger.error(f"{self} is locked")
                         raise AccountLocked(f"{self} is locked")
-                    elif (37 in e.api_codes and "Missing TwitterUserNotSuspended" in e.api_messages) or self.account.status == AccountStatus.SUSPENDED:
+                    elif (37 in e.api_codes and "Missing TwitterUserNotSuspended" in e.api_messages) or self.account.status == TwitterAccountStatus.SUSPENDED:
                         logger.error(f"{self} is suspended")
                         raise AccountSuspended(f"{self} is suspended")
                     raise e
